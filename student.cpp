@@ -1,56 +1,55 @@
 #include "student.h"
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 Student::Student() {
-    firstName = "";
-    lastName = "";
-    creditHours = 0;
+    address = new Address();
+    dob = new Date();
+    gradDate = new Date();
 }
 
-void Student::init(std::string csvLine) {
-    std::stringstream ss(csvLine);
-    std::string temp;
+Student::Student(std::string line) {
 
-    std::string street, city, state, zip;
-    std::string birthStr, gradStr;
+    std::stringstream ss(line);
+    std::string token;
 
     getline(ss, firstName, ',');
     getline(ss, lastName, ',');
-    getline(ss, street, ',');
-    getline(ss, city, ',');
-    getline(ss, state, ',');
-    getline(ss, zip, ',');
-    getline(ss, birthStr, ',');
-    getline(ss, gradStr, ',');
-    getline(ss, temp);
+    getline(ss, token, ',');
+    creditHours = stoi(token);
 
-    creditHours = std::stoi(temp);
-
-    address.init(street, city, state, zip);
-    birthDate.init(birthStr);
-    gradDate.init(gradStr);
+    address = new Address(line);
+    dob = new Date(line);
+    gradDate = new Date(line);
 }
 
-void Student::printStudent() const {
-    std::cout << firstName << " "
-              << lastName << std::endl;
+Student::~Student() {
+    delete address;
+    delete dob;
+    delete gradDate;
+}
 
-    address.printAddress();
+std::string Student::getFirstName() { return firstName; }
+std::string Student::getLastName() { return lastName; }
+int Student::getCredits() { return creditHours; }
+
+void Student::printSummary() {
+    std::cout << lastName << ", " << firstName << std::endl;
+}
+
+void Student::printDetails() {
+
+    std::cout << firstName << " " << lastName << std::endl;
+
+    address->print();
 
     std::cout << "DOB: ";
-    birthDate.printDate();
+    dob->print();
 
     std::cout << "Grad: ";
-    gradDate.printDate();
+    gradDate->print();
 
-    std::cout << "Credits: "
-              << creditHours << std::endl;
-
-    std::cout << "____________________________________"
-              << std::endl;
-}
-
-std::string Student::getLastFirst() const {
-    return lastName + ", " + firstName;
+    std::cout << "Credits: " << creditHours << std::endl;
+    std::cout << "____________________________________" << std::endl;
 }
